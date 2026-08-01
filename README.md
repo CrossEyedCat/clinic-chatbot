@@ -54,7 +54,24 @@ bot_challenge, affirm, deny, chitchat/*, out_of_scope) were adapted from:
 Clinic-domain intents and all responses are hand-written; all clinic data is
 fictional.
 
-## Setup
+## Quick start (one command)
+
+Everything below — Python check, virtualenv, Rasa install, training, all three
+servers, browser — is automated:
+
+```bash
+# Windows
+powershell -ExecutionPolicy Bypass -File run_local.ps1
+
+# Linux / macOS / GitHub Codespaces
+./run_local.sh
+```
+
+Stop with `run_local.ps1 -Stop` / `./run_local.sh stop`. Force retraining with
+`-Retrain` / `retrain`. The scripts retrain automatically when files in
+`data/`, `config.yml` or `domain.yml` are newer than the latest model.
+
+## Manual setup
 
 Rasa 3.x supports Python 3.8–3.10. In a fresh virtual environment:
 

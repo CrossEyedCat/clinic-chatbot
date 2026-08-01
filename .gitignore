@@ -6,3 +6,7 @@ __pycache__/
 *.tar.gz
 venv/
 .venv/
+.venv-rasa/
+.logs/
+.run_local_pids
+.run_local_pids.json
