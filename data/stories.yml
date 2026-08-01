@@ -1,0 +1,130 @@
+version: "3.1"
+
+stories:
+  - story: greet then ask opening hours
+    steps:
+      - intent: greet
+      - action: utter_greet
+      - intent: ask_opening_hours
+      - action: utter_opening_hours
+      - intent: thanks
+      - action: utter_thanks
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - story: booking info with follow-up questions
+    steps:
+      - intent: greet
+      - action: utter_greet
+      - intent: ask_booking
+      - action: utter_booking
+      - action: utter_offer_booking
+      - intent: ask_insurance
+      - action: utter_insurance
+      - intent: thanks
+      - action: utter_thanks
+
+  - story: booking info leads to an in-chat booking
+    steps:
+      - intent: ask_booking
+      - action: utter_booking
+      - action: utter_offer_booking
+      - intent: affirm
+      - action: appointment_form
+      - active_loop: appointment_form
+
+  - story: booking offer declined
+    steps:
+      - intent: ask_booking
+      - action: utter_booking
+      - action: utter_offer_booking
+      - intent: deny
+      - action: utter_booking_cancelled
+
+  - story: user interrupts the form with a question, then continues
+    steps:
+      - intent: request_booking
+      - action: appointment_form
+      - active_loop: appointment_form
+      - intent: ask_opening_hours
+      - action: utter_opening_hours
+      - action: appointment_form
+      - active_loop: appointment_form
+
+  - story: services then doctor availability
+    steps:
+      - intent: ask_services
+      - action: utter_services
+      - intent: ask_doctor_availability
+        entities:
+          - specialty: cardiology
+      - action: utter_doctor_availability
+      - intent: ask_booking
+      - action: utter_booking
+      - action: utter_offer_booking
+
+  - story: test preparation with entity
+    steps:
+      - intent: greet
+      - action: utter_greet
+      - intent: ask_test_preparation
+        entities:
+          - test_type: blood test
+      - action: utter_test_preparation
+      - intent: ask_opening_hours
+      - action: utter_opening_hours
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - story: test preparation without entity, then clarification
+    steps:
+      - intent: ask_test_preparation
+      - action: utter_test_preparation
+      - intent: ask_test_preparation
+        entities:
+          - test_type: ultrasound
+      - action: utter_test_preparation
+      - intent: thanks
+      - action: utter_thanks
+
+  - story: location and contact
+    steps:
+      - intent: ask_location
+      - action: utter_location
+      - intent: ask_contact
+      - action: utter_contact
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - story: cancel appointment info
+    steps:
+      - intent: greet
+      - action: utter_greet
+      - intent: ask_cancel_appointment
+      - action: utter_cancel_appointment
+      - intent: ask_booking
+      - action: utter_booking
+      - action: utter_offer_booking
+      - intent: thanks
+      - action: utter_thanks
+
+  - story: out of scope recovery
+    steps:
+      - intent: out_of_scope
+      - action: utter_out_of_scope
+      - intent: ask_services
+      - action: utter_services
+
+  - story: chitchat then back to business
+    steps:
+      - intent: chitchat
+      - action: utter_chitchat
+      - intent: ask_opening_hours
+      - action: utter_opening_hours
+
+  - story: frustrated user asks for a human
+    steps:
+      - intent: human_handoff
+      - action: utter_handoff
+      - intent: thanks
+      - action: utter_thanks

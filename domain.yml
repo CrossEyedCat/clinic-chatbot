@@ -1,0 +1,263 @@
+version: "3.1"
+
+intents:
+  - greet
+  - goodbye
+  - thanks
+  - bot_challenge
+  - affirm
+  - deny
+  - help
+  - chitchat
+  - human_handoff
+  - ask_opening_hours
+  - ask_location
+  - ask_contact
+  - ask_services
+  - ask_booking
+  - request_booking
+  - ask_cancel_appointment
+  - ask_insurance
+  - ask_test_preparation
+  - ask_doctor_availability
+  - ask_emergency
+  - out_of_scope
+
+entities:
+  - test_type
+  - specialty
+  - phone_number
+
+slots:
+  test_type:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: test_type
+  specialty:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: specialty
+  appointment_date:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+        not_intent:
+          - ask_emergency
+          - human_handoff
+          - help
+          - bot_challenge
+          - ask_opening_hours
+          - ask_location
+          - ask_contact
+          - ask_services
+          - ask_insurance
+          - ask_test_preparation
+          - ask_cancel_appointment
+          - deny
+        conditions:
+          - active_loop: appointment_form
+            requested_slot: appointment_date
+  patient_name:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+        not_intent:
+          - ask_emergency
+          - human_handoff
+          - help
+          - ask_opening_hours
+          - ask_location
+          - ask_contact
+          - ask_services
+          - ask_insurance
+          - ask_test_preparation
+          - ask_cancel_appointment
+          - deny
+        conditions:
+          - active_loop: appointment_form
+            requested_slot: patient_name
+  phone_number:
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_entity
+        entity: phone_number
+        conditions:
+          - active_loop: appointment_form
+            requested_slot: phone_number
+      - type: from_text
+        not_intent:
+          - ask_emergency
+          - human_handoff
+          - help
+          - ask_opening_hours
+          - ask_location
+          - ask_services
+          - ask_insurance
+          - ask_test_preparation
+          - ask_cancel_appointment
+          - deny
+        conditions:
+          - active_loop: appointment_form
+            requested_slot: phone_number
+
+forms:
+  appointment_form:
+    required_slots:
+      - specialty
+      - appointment_date
+      - patient_name
+      - phone_number
+
+actions:
+  - validate_appointment_form
+  - action_submit_appointment
+
+responses:
+  utter_greet:
+    - text: "Hello! Welcome to BrightCare Clinic. I can help you with opening hours, directions, appointments, our services, insurance and how to prepare for tests. What would you like to know?"
+    - text: "Hi there! I'm the BrightCare Clinic assistant. Ask me about opening hours, booking an appointment, our services or test preparation."
+
+  utter_goodbye:
+    - text: "Goodbye! Take care, and see you at BrightCare Clinic."
+    - text: "Bye! If you need anything else, I'm always here."
+
+  utter_thanks:
+    - text: "You're welcome! Is there anything else I can help you with?"
+
+  utter_iamabot:
+    - text: "I'm a virtual assistant for BrightCare Clinic, built with Rasa Open Source. I'm not a human, and I can't give medical advice — for clinical questions please talk to a doctor."
+
+  utter_help:
+    - text: "Here's what I can do:\n• answer questions about opening hours, location, contacts, services and insurance\n• explain how to prepare for tests (blood test, ultrasound, X-ray, ECG)\n• book, cancel or reschedule an appointment\n• hand you over to reception if you need a human.\nJust ask in your own words!"
+
+  utter_handoff:
+    - text: "Of course — you can reach a real person at reception: +49 30 555 0123 (Mon–Fri 08:00–20:00, Sat 09:00–14:00). If you leave your question here, the team will also see the chat transcript."
+
+  utter_chitchat/ask_name:
+    - text: "I'm Bright — the BrightCare Clinic virtual assistant."
+
+  utter_chitchat/who_made_you:
+    - text: "I was built by the BrightCare team with Rasa Open Source, as part of a university project on conversational AI."
+
+  utter_chitchat/how_old:
+    - text: "I'm quite young — my current model was trained just recently. Chatbot years are like dog years, though."
+
+  utter_chitchat/tell_joke:
+    - text: "Why did the chatbot go to the doctor? It had a bad case of the loops! …I'll stick to clinic questions. 😊"
+
+  utter_opening_hours:
+    - text: "BrightCare Clinic is open Monday–Friday 08:00–20:00 and Saturday 09:00–14:00. We are closed on Sundays and public holidays. The blood collection room works Monday–Saturday 08:00–11:00."
+
+  utter_location:
+    - text: "We are located at 12 Harbour Street, Berlin, 10115 — two minutes' walk from Naturkundemuseum station (U6). Parking is available behind the building."
+
+  utter_contact:
+    - text: "You can reach the reception desk at +49 30 555 0123 (Mon–Fri 08:00–20:00) or by email at info@brightcare-clinic.example. For prescriptions, please email prescriptions@brightcare-clinic.example."
+
+  utter_services:
+    - text: "BrightCare Clinic offers general practice (GP) consultations, cardiology, dermatology, paediatrics, physiotherapy, vaccinations, and a diagnostic laboratory (blood tests, ECG, ultrasound and X-ray)."
+
+  utter_booking:
+    - text: "You can book an appointment in three ways: online at brightcare-clinic.example/booking, by phone at +49 30 555 0123, or in person at the reception desk. For a first visit, please bring your ID and insurance card."
+
+  utter_offer_booking:
+    - text: "I can also book an appointment for you right here in the chat — shall we start?"
+      buttons:
+        - title: "Yes, book it"
+          payload: "yes"
+        - title: "No, thanks"
+          payload: "no thanks"
+
+  utter_ask_specialty:
+    - text: "Which specialist would you like to see? We have: GP, cardiology, dermatology, paediatrics, and physiotherapy."
+      buttons:
+        - title: "GP"
+          payload: "GP"
+        - title: "Cardiology"
+          payload: "cardiology"
+        - title: "Dermatology"
+          payload: "dermatology"
+        - title: "Paediatrics"
+          payload: "paediatrics"
+        - title: "Physiotherapy"
+          payload: "physiotherapy"
+
+  utter_ask_appointment_date:
+    - text: "When would you like to come? (e.g. 'next Tuesday morning' or '12 August around 15:00')"
+      custom:
+        widget: "datetime"
+
+  utter_ask_patient_name:
+    - text: "May I have the patient's full name?"
+
+  utter_ask_phone_number:
+    - text: "And a phone number we can reach you at? (e.g. +49 30 1234567)"
+
+  utter_booking_cancelled:
+    - text: "No problem, I've cancelled the booking process. Anything else I can help you with?"
+
+  utter_cancel_appointment:
+    - text: "To cancel or reschedule an appointment, call +49 30 555 0123 or use the link in your confirmation email. Please give us at least 24 hours' notice so the slot can be offered to another patient."
+
+  utter_insurance:
+    - text: "We accept all public health insurance (gesetzliche Krankenversicherung) and most private insurers. Self-paying patients receive an itemised invoice. If you are unsure about your plan, reception can check it for you before your visit."
+
+  utter_test_preparation:
+    - condition:
+        - type: slot
+          name: test_type
+          value: blood test
+      text: "For a routine blood test, please fast for 8–12 hours beforehand — water is fine, but avoid food, coffee, and sugary drinks. Take your regular medication unless your doctor told you otherwise."
+    - condition:
+        - type: slot
+          name: test_type
+          value: ultrasound
+      text: "For an abdominal ultrasound, please do not eat for 6 hours before the scan. You may drink still water. For a pelvic ultrasound, arrive with a full bladder."
+    - condition:
+        - type: slot
+          name: test_type
+          value: x-ray
+      text: "An X-ray needs no special preparation. Wear comfortable clothing without metal parts (zips, jewellery) — you may be asked to remove accessories. Please tell the radiographer beforehand if there is any chance you are pregnant."
+    - condition:
+        - type: slot
+          name: test_type
+          value: ecg
+      text: "An ECG needs no special preparation. Just avoid intense exercise, caffeine and smoking for about an hour before the test, and wear clothing that gives easy access to your chest."
+    - text: "Preparation depends on the test. Common examples: blood tests usually require 8–12 hours of fasting; abdominal ultrasound requires 6 hours without food; X-ray and ECG need no preparation. Which test are you having?"
+      buttons:
+        - title: "Blood test"
+          payload: "how to prepare for a blood test"
+        - title: "Ultrasound"
+          payload: "how to prepare for an ultrasound"
+        - title: "X-ray"
+          payload: "how to prepare for an x-ray"
+        - title: "ECG"
+          payload: "how to prepare for an ECG"
+
+  utter_doctor_availability:
+    - condition:
+        - type: slot
+          name: specialty
+          value: cardiology
+      text: "Our cardiologist, Dr. Weber, consults on Tuesdays and Thursdays 09:00–17:00. You can book online or by phone."
+    - text: "Our GPs are available daily; specialist clinics (cardiology, dermatology, paediatrics) run on fixed weekdays. Tell me the specialty you need, or check live availability at brightcare-clinic.example/booking."
+
+  utter_emergency:
+    - text: "⚠️ If this is a medical emergency, please stop chatting and call 112 (EU emergency number) immediately, or go to the nearest emergency department. This assistant cannot handle emergencies."
+
+  utter_out_of_scope:
+    - text: "I'm afraid that's outside what I can help with — I only answer questions about BrightCare Clinic (hours, appointments, services, insurance, test preparation). Is there something clinic-related I can do for you?"
+
+  utter_default:
+    - text: "Sorry, I didn't quite understand that. Could you rephrase it? You can ask me about opening hours, booking, our services, insurance, or how to prepare for a test — or type 'help'."
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

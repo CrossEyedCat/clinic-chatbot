@@ -1,0 +1,38 @@
+version: "3.1"
+
+stories:
+  - story: test - hours question is answered
+    steps:
+      - user: |
+          hi
+        intent: greet
+      - action: utter_greet
+      - user: |
+          are you open on saturday?
+        intent: ask_opening_hours
+      - action: utter_opening_hours
+
+  - story: test - blood test preparation with entity
+    steps:
+      - user: |
+          do I need to fast before my [blood test](test_type)?
+        intent: ask_test_preparation
+      - action: utter_test_preparation
+
+  - story: test - emergency always escalated
+    steps:
+      - user: |
+          I have severe chest pain
+        intent: ask_emergency
+      - action: utter_emergency
+
+  - story: test - out of scope politely refused
+    steps:
+      - user: |
+          tell me a joke
+        intent: out_of_scope
+      - action: utter_out_of_scope
+      - user: |
+          ok what services do you offer?
+        intent: ask_services
+      - action: utter_services

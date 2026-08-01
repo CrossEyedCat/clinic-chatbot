@@ -1,0 +1,16 @@
+{
+  "name": "BrightCare Rasa Bot",
+  "image": "mcr.microsoft.com/devcontainers/python:3.10",
+  "postCreateCommand": "pip install rasa==3.6.21 && rasa train",
+  "forwardPorts": [5005, 5055, 8088],
+  "portsAttributes": {
+    "5005": { "label": "Rasa API" },
+    "5055": { "label": "Action server" },
+    "8088": { "label": "Web chat" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": ["redhat.vscode-yaml", "ms-python.python"]
+    }
+  }
+}

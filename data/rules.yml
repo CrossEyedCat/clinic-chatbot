@@ -1,0 +1,123 @@
+version: "3.1"
+
+rules:
+  - rule: always greet back
+    steps:
+      - intent: greet
+      - action: utter_greet
+
+  - rule: always say goodbye
+    steps:
+      - intent: goodbye
+      - action: utter_goodbye
+
+  - rule: disclose bot identity when challenged
+    steps:
+      - intent: bot_challenge
+      - action: utter_iamabot
+
+  - rule: answer chitchat with the response selector
+    steps:
+      - intent: chitchat
+      - action: utter_chitchat
+
+  - rule: explain capabilities on help
+    steps:
+      - intent: help
+      - action: utter_help
+
+  - rule: hand off to a human on request
+    steps:
+      - intent: human_handoff
+      - action: utter_handoff
+
+  - rule: emergency messages always get the emergency response
+    steps:
+      - intent: ask_emergency
+      - action: utter_emergency
+
+  - rule: always answer opening hours
+    steps:
+      - intent: ask_opening_hours
+      - action: utter_opening_hours
+
+  - rule: always answer location
+    steps:
+      - intent: ask_location
+      - action: utter_location
+
+  - rule: always answer contacts
+    steps:
+      - intent: ask_contact
+      - action: utter_contact
+
+  - rule: always answer services
+    steps:
+      - intent: ask_services
+      - action: utter_services
+
+  - rule: always answer insurance
+    steps:
+      - intent: ask_insurance
+      - action: utter_insurance
+
+  - rule: always answer cancellation questions
+    steps:
+      - intent: ask_cancel_appointment
+      - action: utter_cancel_appointment
+
+  - rule: always answer test preparation
+    steps:
+      - intent: ask_test_preparation
+      - action: utter_test_preparation
+
+  - rule: always answer doctor availability
+    steps:
+      - intent: ask_doctor_availability
+      - action: utter_doctor_availability
+
+  - rule: always acknowledge thanks
+    steps:
+      - intent: thanks
+      - action: utter_thanks
+
+  - rule: booking info always ends with an offer to book in chat
+    steps:
+      - intent: ask_booking
+      - action: utter_booking
+      - action: utter_offer_booking
+
+  - rule: politely refuse out-of-scope requests
+    steps:
+      - intent: out_of_scope
+      - action: utter_out_of_scope
+
+  - rule: fallback when the message is not understood
+    steps:
+      - intent: nlu_fallback
+      - action: utter_default
+
+  - rule: activate appointment form on direct booking request
+    steps:
+      - intent: request_booking
+      - action: appointment_form
+      - active_loop: appointment_form
+
+  - rule: submit appointment form when all slots are filled
+    condition:
+      - active_loop: appointment_form
+    steps:
+      - action: appointment_form
+      - active_loop: null
+      - slot_was_set:
+          - requested_slot: null
+      - action: action_submit_appointment
+
+  - rule: cancel the form when the user changes their mind
+    condition:
+      - active_loop: appointment_form
+    steps:
+      - intent: deny
+      - action: action_deactivate_loop
+      - active_loop: null
+      - action: utter_booking_cancelled

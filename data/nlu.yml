@@ -1,0 +1,687 @@
+version: "3.1"
+
+nlu:
+  - intent: greet
+    examples: |
+      - hi
+      - hello
+      - hey
+      - hello there
+      - good morning
+      - good afternoon
+      - good evening
+      - hi there
+      - hey bot
+      - greetings
+      - hiya
+      - hello, anyone there?
+      - hi, I have a question
+      - hey, can you help me?
+      - moin
+      - good day
+      - so how is everything
+      - heller
+      - hello, how are you
+      - hey hey!
+      - how have you been
+      - why hello
+      - how are things going
+      - what's going on
+      - hiya!
+      - aloha
+      - hello how's it going
+      - how have you been doing
+      - how are things
+      - are you doing well
+      - how's ife treating you
+      - how is everything going for you
+      - just wanted to say hi
+      - hey, how's it going
+      - how are you this fine day
+      - ai how are you doing today
+      - whats up
+      - how goes it
+      - how are things for you
+      - hey what's up
+      - how do you feel
+      - how is your day
+      - what do you feel like doing
+      - greetings to you
+      - hey how's it hanging
+      - are things going well for you
+
+  - intent: goodbye
+    examples: |
+      - bye
+      - goodbye
+      - see you
+      - see you later
+      - bye bye
+      - that's all, thanks
+      - I have to go
+      - talk to you later
+      - ciao
+      - have a nice day
+      - ok bye
+      - that is everything, goodbye
+      - quit
+      - exit
+      - end chat
+      - i have to get going
+      - great chat, talk to you later
+      - i'm glad i got to talk to you
+      - adios ai
+      - thanks for talking to me
+      - great talk, take it easy
+      - later, thanks for chatting
+      - it was nice chatting with you
+      - see ya
+      - fairwell
+      - buhbye
+      - it was great chatting with you
+      - until next time!
+      - later gator!
+      - it was nice to get in touch
+      - glad we got to talk
+      - it was pleasant conversing with you
+      - later!
+      - i must say goodbye
+      - bye-bye
+      - ill see you around
+      - ai goodbye
+      - goodbye, helpful ai device!
+      - have a good one
+      - bye now
+      - we'll talk later ai
+      - goodbye, ai assistant
+      - see you in a while
+      - i had a pleasure talking to you, see you later
+      - thanks for talking
+
+  - intent: thanks
+    examples: |
+      - thanks
+      - thank you
+      - thanks a lot
+      - thank you so much
+      - great, thanks
+      - perfect, thank you
+      - that helps, thanks
+      - cheers
+      - thx
+      - many thanks
+      - awesome, thank you
+      - very helpful, thanks
+      - thanks, that's helpful
+      - let me thank you
+      - thanks for letting me know
+      - you did a good job thank you
+      - that's all i need, thanks!
+      - i appreciate your help
+      - thank you for answering that
+      - thanks so much!
+      - thank you for the answer
+      - i am thankful for your help!
+      - you've been a great help
+      - thank you a lot for that answer
+      - i thank you
+      - i have much gratitude for your help
+      - i'm grateful to you
+      - i'm grateful for the assistance
+      - thanks again
+      - i would like to thank you
+      - thanks for that!
+      - i can not thank you enough
+      - thanks for answering my question
+      - thanks!
+      - i want to thank you for helping
+      - your answer is appreciated
+      - i really thank you
+
+  - intent: bot_challenge
+    examples: |
+      - are you a bot?
+      - are you a human?
+      - am I talking to a robot?
+      - is this a real person?
+      - who am I chatting with?
+      - are you real?
+      - is this an AI?
+      - what are you?
+      - are you a machine?
+      - human or bot?
+      - are you ai
+      - you are a bot aren't you
+      - are you an ai or a real person
+      - are you an ai or person
+      - how do i know that you're a person
+      - i want to know if you are a real person or an ai
+      - are you a human or an ai
+      - prove that you're a person
+      - tell me now if you are a bot
+      - are you really a human
+      - please specify if you are human or computer
+      - i need to know if you are a real person or an ai
+      - are you a real life person
+      - are you an ai or can you prove you're human
+      - are you real or fake
+      - are you a real person or a computer
+      - are you a person
+      - is there a way to tell if you are real or an ai
+      - so are you a bot
+      - are you a real person or an ai
+      - are you human or a bot
+      - are you a human being or a robot
+      - tell me if you are human
+      - do you think you are a bot
+      - are you really an actual human being
+
+  - intent: ask_opening_hours
+    examples: |
+      - what are your opening hours?
+      - when are you open?
+      - what time do you open?
+      - what time do you close?
+      - are you open on Saturday?
+      - are you open on weekends?
+      - is the clinic open on Sunday?
+      - opening times please
+      - until when are you open today?
+      - when does the clinic open in the morning?
+      - can I come in the evening?
+      - what are the hours of the lab?
+      - when can I come for a blood draw?
+      - working hours
+      - are you open on public holidays?
+      - how late are you open on Friday?
+
+  - intent: ask_location
+    examples: |
+      - where are you located?
+      - what is your address?
+      - how do I get to the clinic?
+      - where is the clinic?
+      - which station is closest to you?
+      - do you have parking?
+      - can I park at the clinic?
+      - how to find you?
+      - directions to the clinic please
+      - is the clinic close to the metro?
+      - address please
+      - where exactly is BrightCare?
+      - what's the nearest U-Bahn station?
+      - is there parking nearby?
+
+  - intent: ask_contact
+    examples: |
+      - what is your phone number?
+      - how can I call you?
+      - what's the email address?
+      - how do I contact reception?
+      - can I email the clinic?
+      - phone number please
+      - how do I reach you?
+      - contact details please
+      - who do I call about a prescription?
+      - how can I get in touch?
+      - is there a phone line for prescriptions?
+      - give me your contacts
+
+  - intent: ask_services
+    examples: |
+      - what services do you offer?
+      - what can I do at your clinic?
+      - do you have a cardiologist?
+      - do you offer physiotherapy?
+      - what doctors work at the clinic?
+      - do you do vaccinations?
+      - can I get an X-ray at your clinic?
+      - do you have a lab?
+      - what specialists are available?
+      - do you treat children?
+      - do you offer ultrasound?
+      - can I get an ECG done?
+      - what kind of tests do you do?
+      - list of your services please
+      - do you have a dermatologist?
+
+  - intent: ask_booking
+    examples: |
+      - how do I book an appointment?
+      - what are the ways to make an appointment?
+      - can I book by phone or only online?
+      - can I book online?
+      - how can I schedule a visit?
+      - I need to see a doctor
+      - how do I register for a consultation?
+      - what do I need for my first visit?
+      - I'd like to see a [cardiologist](specialty)
+      - how do I make an appointment with a [dermatologist](specialty)?
+      - can I book a visit to the [GP](specialty)?
+      - I need an appointment for my child with a [paediatrician](specialty)
+      - do I need a referral to book?
+      - what documents do I need to bring?
+      - how far in advance should I book?
+
+  - intent: ask_cancel_appointment
+    examples: |
+      - how do I cancel my appointment?
+      - I need to cancel my visit
+      - can I reschedule my appointment?
+      - I can't come tomorrow, what should I do?
+      - I want to move my appointment to another day
+      - cancel my booking please
+      - how late can I cancel?
+      - is there a fee for cancelling?
+      - I need to change the time of my appointment
+      - can I postpone my consultation?
+      - what happens if I miss my appointment?
+
+  - intent: ask_insurance
+    examples: |
+      - do you accept public insurance?
+      - do you take private insurance?
+      - which insurances do you accept?
+      - is my insurance accepted?
+      - do you work with TK?
+      - can I pay without insurance?
+      - how much does a visit cost without insurance?
+      - do I need my insurance card?
+      - is the visit covered by insurance?
+      - do you accept gesetzliche Krankenversicherung?
+      - what if I am self-paying?
+      - will my private plan cover the visit?
+
+  - intent: ask_test_preparation
+    examples: |
+      - how should I prepare for a [blood test](test_type)?
+      - do I need to fast before my [blood test](test_type)?
+      - can I eat before giving [blood](test_type:blood test)?
+      - can I drink coffee before a [blood test](test_type)?
+      - how do I prepare for an [ultrasound](test_type)?
+      - do I need an empty stomach for the [ultrasound](test_type)?
+      - any preparation needed for an [X-ray](test_type:x-ray)?
+      - how to prepare for an [ECG](test_type:ecg)?
+      - should I stop my medication before the [blood test](test_type)?
+      - preparation for [abdominal ultrasound](test_type:ultrasound)?
+      - what should I do before my test?
+      - do I need to prepare for tomorrow's test?
+      - can I take my pills before the [blood draw](test_type:blood test)?
+      - is fasting required before [lab tests](test_type:blood test)?
+
+  - intent: ask_doctor_availability
+    examples: |
+      - when does the [cardiologist](specialty) work?
+      - is the [dermatologist](specialty) available this week?
+      - which days does the [paediatrician](specialty) see patients?
+      - when can I see a [cardiologist](specialty)?
+      - what are the [GP](specialty)'s hours?
+      - is Dr. Weber available on Tuesday?
+      - when is the [physiotherapist](specialty) in?
+      - on which days does the [cardiology](specialty:cardiology) clinic run?
+      - availability of the [skin doctor](specialty:dermatology)?
+      - when do specialists consult?
+      - when does the [heart doctor](specialty:cardiology) work?
+      - what days does the [skin doctor](specialty:dermatology) see patients?
+      - is the [family doctor](specialty:general practitioner) in tomorrow?
+      - when can I see the [children's doctor](specialty:paediatrics)?
+
+  - intent: ask_emergency
+    examples: |
+      - I have severe chest pain
+      - this is an emergency
+      - I think I'm having a heart attack
+      - my child can't breathe
+      - I am bleeding heavily
+      - I need urgent help right now
+      - severe allergic reaction, what do I do?
+      - someone collapsed, help
+      - emergency!
+      - I feel like I'm going to faint and my arm is numb
+
+  - intent: out_of_scope
+    examples: |
+      - what's the weather today?
+      - can you order me a pizza?
+      - who won the football game yesterday?
+      - what do you think about politics?
+      - sing me a song
+      - what's the capital of France?
+      - can you do my homework?
+      - I want to talk about movies
+      - bitcoin price?
+      - what is the secret or meaning to life
+      - does my life have meaning
+      - what does life mean on a deeper level
+      - how do i find the meaning of life
+      - could you tell me the meaning of life, please
+      - what makes life have any meaning
+      - whats the meaning of life
+      - can you figure out the meaning of life
+      - what year was saxaphone first played
+      - when's the next movie starring thor set to come out
+      - what does my personality mean
+      - which character is the most famous from titanic
+      - how do i start my own marketing firm
+      - when did the mls start
+      - when did camus die
+      - when was nintendo created
+      - who's toledo's starting point guard for the next game
+      - what's the biggest saas marketing company in the united states
+      - what is the current market trend
+      - what are some ways to reduce spending
+      - when was kobe bryant born
+      - how many sides are in a hexagon
+      - what are van gogh's best pieces
+      - are any justice league movies coming out
+      - who was the first capcom character
+      - is there overtime in college football
+      - i need to speak to customer service regarding my flight
+      - where is the dipstick
+      - do people prefer summer over fall
+      - how do i remove a coffee blemish
+      - which piano is best for classical
+      - are you able to answer algebra equations
+      - who is the scariest character in start trek
+      - how can i get involved in restaurant marketing
+      - how many players are on the chicago bulls
+      - what's the best price on super smash bros ultimate right now
+      - what is the largest state in the us
+      - what year was star trek released
+
+  - synonym: blood test
+    examples: |
+      - blood draw
+      - blood work
+      - lab tests
+      - blood
+
+  - synonym: cardiology
+    examples: |
+      - cardiologist
+      - heart doctor
+
+  - synonym: dermatology
+    examples: |
+      - dermatologist
+      - skin doctor
+
+  - synonym: general practitioner
+    examples: |
+      - GP
+      - family doctor
+
+  - synonym: x-ray
+    examples: |
+      - xray
+      - X ray
+      - radiography
+      - roentgen
+
+  - synonym: ecg
+    examples: |
+      - EKG
+      - cardiogram
+      - electrocardiogram
+      - heart trace
+
+  - synonym: paediatrics
+    examples: |
+      - paediatrician
+      - pediatrician
+      - children's doctor
+
+  - intent: affirm
+    examples: |
+      - true is my response
+      - its a for sure true
+      - that appears true
+      - my response to that is yes
+      - yes
+      - i would have to say yes as my answer
+      - it is a true
+      - that is not false
+      - affirmative, go ahead
+      - yes that is right
+      - true
+      - indeed
+      - ok
+      - that's the truth
+      - very true
+      - absolutely correct
+      - that seems true
+      - i have to say affirmative on that one
+      - yes i do like that
+      - it is true
+      - i think that's true
+      - all right
+      - i believe what you just said is true
+      - you got it
+      - that is a yes
+      - yep, that's right
+      - yes that's it
+      - that's a definite yes
+      - yes please
+      - go ahead
+      - sure, let’s do it
+
+  - intent: deny
+    examples: |
+      - no, that is not right
+      - no that's wrong
+      - that would be false
+      - the answer is definitely no
+      - no that is not right
+      - that's not true
+      - no way!
+      - no thank you
+      - definitely not
+      - not that one
+      - that's not right, so no
+      - the answer is no
+      - i say negative
+      - not really
+      - no, that can't be right
+      - that isn't the right answer
+      - that's completely false
+      - that is untrue
+      - negative for sure
+      - that's a hard no from me
+      - no, that is inaccurate
+      - that is not right
+      - that’s actually wrong
+      - i gotta say no
+      - no is the answer
+      - nada
+      - i believe that to be false
+      - not at all
+      - no thanks
+      - not now
+      - cancel that
+
+  - intent: chitchat/ask_name
+    examples: |
+      - what should i refer to you as
+      - i would like to know your name
+      - is there a name that you preferred to be called by
+      - ai, what should i call you
+      - what name should i use when talking with you
+      - what name do you prefer
+      - tell me about yourself
+      - would you tell me your name
+      - what is your full name
+      - is there a particular name i should call you
+      - i'd like your name
+      - and what would your name be
+      - how should i refer to you
+      - what do they call you
+      - what name should i use to address you
+      - do you have a name i can use
+      - when referring to you, what name do you want me to use
+      - what is the ai's name
+
+  - intent: chitchat/who_made_you
+    examples: |
+      - who were you invented by
+      - what created you
+      - which company programmed you
+      - tell me who programmed you
+      - who created your ai program
+      - you were built by who
+      - may i know who made you
+      - ai was made by whom
+      - who developed your actions
+      - who engineered you
+      - tell me the company that produces you and similar machines
+      - who gave you life
+      - ai who made you
+      - what company owns your code
+      - i need to know who programmed you
+      - which company can i credit your design to
+      - who designed you
+      - who made the ai
+
+  - intent: chitchat/how_old
+    examples: |
+      - what year were you born
+      - how long have you been alive for
+      - i need to know how old you are
+      - tell me when you were born
+      - how long have you been around
+      - on what day and date of what year were you born
+      - how long have you been here
+      - can you tell me how old the ai is
+      - i am wanting to know how old you are
+      - how old are you, again
+      - are you older than me
+      - what is al's age
+      - would you tell me your age
+      - how many years have you been on
+
+  - intent: chitchat/tell_joke
+    examples: |
+      - please tell me a joke
+      - do you have a list of funny jokes
+      - can you tell me some dog jokes
+      - can you tell me a few funny jokes
+      - do you have anything funny to tell me
+      - tell me something amusing
+      - i could really use a laugh right now
+      - tell me a joke
+      - can you make me laugh
+      - tell me something funny about americans
+      - tell me something funny about love
+      - i would like to listen to a funny joke
+      - tell me something funny about animals
+      - please, recite to me some good one liners
+      - tell me something funny about parenting
+      - hit me with a good joke
+      - i wanna hear something funny
+      - mind sharing a joke
+
+  - intent: human_handoff
+    examples: |
+      - can i please speak to a human?
+      - talk with a human
+      - Can i talk to a human instead
+      - do you have human support ?
+      - can you forward me to your team
+      - nevermind.... you're not human ... I need to talk to a live person
+      - that's annoying I'd like to speak to someone real
+      - wrong i want to speak to a human
+      - give me a human now
+      - can i talk to human
+      - are there also humans working for your company?
+      - please give me a human
+      - i want to chat with human
+      - I dont like to talk to a machine
+      - i want human :(
+      - gimme a proper human
+      - I need a real person
+      - thats not helping, can i talk to human?
+      - can you put me in touch with a human?
+      - can i speak to a human
+      - Can i talk to a human?
+      - service agent
+      - can I talk to a real person at the clinic
+      - connect me with reception please
+      - I need to speak to a human
+      - transfer me to a staff member
+
+  - intent: request_booking
+    examples: |
+      - I want to book an appointment now
+      - book me an appointment
+      - can you book a visit for me
+      - please schedule an appointment for me
+      - I’d like to make an appointment with a [cardiologist](specialty)
+      - book me in with the [dermatologist](specialty)
+      - schedule me a visit to the [GP](specialty:general practitioner)
+      - make an appointment for next Tuesday
+      - I need an appointment for my checkup, can you arrange it
+      - set up an appointment please
+      - can you get me a slot with [cardiology](specialty)
+      - book an appointment for me for Friday morning
+      - arrange a consultation for me
+      - I want to see a doctor, book me in
+      - get me an appointment with a [paediatrician](specialty:paediatrics)
+      - schedule my appointment please
+      - reserve a time with the [skin doctor](specialty:dermatology) for me
+      - yes book it for me
+      - book an appointment, my number is [+49 30 1234567](phone_number)
+      - schedule a visit, you can reach me at [0171 5556677](phone_number)
+      - book me in, phone [+49(30)555-12-34](phone_number)
+
+  - intent: help
+    examples: |
+      - what can you do?
+      - help
+      - how can you help me?
+      - what are you able to do
+      - what do you know?
+      - show me what you can do
+      - what questions can I ask you?
+      - what services do you provide as a bot
+      - I need help using this chat
+      - what are my options here
+      - give me some guidance
+      - how does this work?
+      - what can I ask?
+      - help me please
+
+  - regex: phone_number
+    examples: |
+      - [\+0-9][0-9\-\s\(\)]{6,}[0-9]
+
+  - lookup: specialty
+    examples: |
+      - cardiology
+      - dermatology
+      - paediatrics
+      - physiotherapy
+      - general practitioner
+      - cardiologist
+      - dermatologist
+      - paediatrician
+      - physiotherapist
+      - GP
+      - heart doctor
+      - skin doctor
+      - family doctor
+      - pediatrician
+      - children's doctor
+
+  - lookup: test_type
+    examples: |
+      - blood test
+      - ultrasound
+      - x-ray
+      - ecg
+      - blood draw
+      - blood work
+      - xray
+      - X ray
+      - EKG
+      - cardiogram
+      - electrocardiogram
+      - radiography

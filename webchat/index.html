@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BrightCare Clinic — Chat Assistant</title>
+<style>
+:root{
+  --brand-1:#10b981;--brand-2:#0d9488;--brand-3:#0f766e;
+  --bg:#f0f4f8;--mesh-1:rgba(16,185,129,.14);--mesh-2:rgba(59,130,246,.10);
+  --card:rgba(255,255,255,.72);--card-solid:#ffffff;--line:rgba(15,23,42,.08);
+  --fg:#0f172a;--muted:#64748b;
+  --bot-bubble:#ffffff;--bot-fg:#1e293b;
+  --user-bubble:linear-gradient(135deg,#10b981,#0d9488);--user-fg:#fff;
+  --chip-bg:rgba(255,255,255,.85);--input-bg:#ffffff;
+  --shadow:0 8px 30px rgba(2,44,34,.10);--ring:rgba(16,185,129,.35);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0b1220;--mesh-1:rgba(16,185,129,.12);--mesh-2:rgba(56,116,203,.12);
+    --card:rgba(17,25,40,.72);--card-solid:#111928;--line:rgba(148,163,184,.10);
+    --fg:#e2e8f0;--muted:#8fa0b3;
+    --bot-bubble:#1a2333;--bot-fg:#dbe4ee;
+    --chip-bg:rgba(26,35,51,.9);--input-bg:#1a2333;
+    --shadow:0 8px 30px rgba(0,0,0,.45);--ring:rgba(16,185,129,.4);
+  }
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(60% 50% at 12% 0%,var(--mesh-1),transparent 60%),
+    radial-gradient(50% 45% at 100% 100%,var(--mesh-2),transparent 60%),
+    var(--bg);
+  color:var(--fg);display:flex;
+  font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,Arial,sans-serif;
+}
+.app{
+  width:100%;max-width:780px;margin:0 auto;height:100dvh;
+  display:flex;flex-direction:column;
+}
+@media(min-width:820px){
+  .app{height:calc(100dvh - 48px);margin:24px auto;border-radius:24px;
+    background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
+}
+
+/* ---------- header ---------- */
+header{
+  display:flex;align-items:center;gap:14px;padding:16px 20px;
+  background:linear-gradient(120deg,var(--brand-1),var(--brand-2) 55%,var(--brand-3));
+  color:#fff;position:relative;overflow:hidden;flex:none;
+}
+header::after{content:"";position:absolute;inset:0;
+  background:radial-gradient(80% 140% at 100% 0%,rgba(255,255,255,.18),transparent 55%);pointer-events:none}
+.logo{
+  width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;flex:none;
+}
+.logo svg{width:24px;height:24px}
+.h-title{font-size:1.02rem;font-weight:700;letter-spacing:.01em}
+.h-sub{font-size:.76rem;opacity:.85;margin-top:1px}
+#status{
+  margin-left:auto;display:flex;align-items:center;gap:7px;
+  font-size:.74rem;font-weight:600;padding:6px 12px;border-radius:99px;
+  background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);
+  backdrop-filter:blur(4px);white-space:nowrap;z-index:1;
+}
+#status .dot{width:8px;height:8px;border-radius:50%;background:#facc15;flex:none;transition:background .3s}
+#status.ok .dot{background:#4ade80;box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 2s infinite}
+#status.err .dot{background:#fb7185}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.55)}70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+
+/* ---------- chat ---------- */
+#chat{flex:1;overflow-y:auto;padding:24px 18px 12px;display:flex;flex-direction:column;gap:4px;scroll-behavior:smooth}
+#chat::-webkit-scrollbar{width:8px}
+#chat::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+.row{display:flex;gap:10px;align-items:flex-end;margin-top:10px;animation:rise .28s cubic-bezier(.21,.9,.35,1)}
+.row.user{flex-direction:row-reverse}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.avatar{
+  width:32px;height:32px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--brand-1),var(--brand-3));color:#fff;
+  box-shadow:0 2px 8px rgba(13,148,136,.35);
+}
+.avatar svg{width:17px;height:17px}
+.stack{max-width:min(76%,560px);display:flex;flex-direction:column;gap:3px}
+.row.user .stack{align-items:flex-end}
+.bubble{
+  padding:11px 15px;border-radius:18px;white-space:pre-wrap;word-wrap:break-word;
+  box-shadow:0 1px 3px rgba(2,20,15,.07);
+}
+.row.bot .bubble{background:var(--bot-bubble);color:var(--bot-fg);border:1px solid var(--line);border-bottom-left-radius:6px}
+.row.user .bubble{background:var(--user-bubble);color:var(--user-fg);border-bottom-right-radius:6px;box-shadow:0 4px 14px rgba(13,148,136,.30)}
+.bubble.error{background:transparent;border:1px dashed #fb7185;color:#e11d48}
+.time{font-size:.68rem;color:var(--muted);padding:0 6px;user-select:none}
+
+/* typing indicator */
+.typing-bubble{display:inline-flex;gap:5px;padding:14px 16px}
+.typing-bubble i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
+.typing-bubble i:nth-child(2){animation-delay:.18s}.typing-bubble i:nth-child(3){animation-delay:.36s}
+@keyframes blink{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+/* ---------- quick chips ---------- */
+.quick{display:flex;gap:8px;padding:8px 16px 4px;overflow-x:auto;flex:none;scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.quick button{
+  flex:none;display:flex;align-items:center;gap:7px;
+  border:1px solid var(--line);background:var(--chip-bg);color:var(--fg);
+  border-radius:99px;padding:8px 14px;font-size:.8rem;font-weight:550;cursor:pointer;
+  backdrop-filter:blur(6px);transition:transform .15s,border-color .15s,box-shadow .15s;
+}
+.quick button:hover{transform:translateY(-1px);border-color:var(--brand-1);box-shadow:0 4px 12px rgba(16,185,129,.18)}
+.quick button:active{transform:none}
+
+/* ---------- composer ---------- */
+form{display:flex;gap:10px;padding:12px 16px 16px;flex:none}
+.field{
+  flex:1;display:flex;align-items:center;background:var(--input-bg);
+  border:1.5px solid var(--line);border-radius:16px;transition:border-color .15s,box-shadow .15s;
+}
+.field:focus-within{border-color:var(--brand-1);box-shadow:0 0 0 4px var(--ring)}
+input{
+  flex:1;background:transparent;border:0;outline:none;color:var(--fg);
+  padding:13px 16px;font-size:.95rem;
+}
+input::placeholder{color:var(--muted)}
+#send{
+  width:48px;height:48px;border:0;border-radius:15px;cursor:pointer;flex:none;
+  background:linear-gradient(135deg,var(--brand-1),var(--brand-2));color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 16px rgba(13,148,136,.35);transition:transform .15s,box-shadow .15s,opacity .15s;
+}
+#send:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(13,148,136,.45)}
+#send:active{transform:scale(.96)}
+#send:disabled{opacity:.5;cursor:default;transform:none}
+#send svg{width:20px;height:20px;margin-left:2px}
+
+/* ---------- reply buttons under bot messages ---------- */
+.reply-btns{display:flex;flex-wrap:wrap;gap:7px;padding:2px 4px 0}
+.reply-btns button{
+  border:1.5px solid var(--brand-1);background:transparent;color:var(--brand-2);
+  border-radius:99px;padding:7px 14px;font-size:.82rem;font-weight:600;cursor:pointer;
+  transition:background .15s,color .15s,transform .15s;
+}
+@media (prefers-color-scheme:dark){.reply-btns button{color:#34d399}}
+.reply-btns button:hover{background:var(--brand-1);color:#fff;transform:translateY(-1px)}
+.reply-btns.used button{opacity:.45;pointer-events:none}
+.reply-btns button.picked{background:var(--brand-1);color:#fff;opacity:1}
+
+/* ---------- datetime widget ---------- */
+.dt-widget{
+  margin-top:4px;padding:14px;border-radius:16px;border:1px solid var(--line);
+  background:var(--card-solid);box-shadow:0 2px 10px rgba(2,20,15,.06);
+  display:flex;flex-direction:column;gap:10px;max-width:340px;
+}
+.dt-widget .dt-row{display:flex;gap:8px}
+.dt-widget label{display:flex;flex-direction:column;gap:4px;font-size:.72rem;color:var(--muted);flex:1}
+.dt-widget input{
+  border:1.5px solid var(--line);border-radius:10px;background:var(--input-bg);color:var(--fg);
+  padding:9px 10px;font-size:.88rem;outline:none;width:100%;
+}
+.dt-widget input:focus{border-color:var(--brand-1)}
+.dt-presets{display:flex;flex-wrap:wrap;gap:6px}
+.dt-presets button{
+  border:1px solid var(--line);background:var(--chip-bg);color:var(--fg);
+  border-radius:99px;padding:6px 11px;font-size:.75rem;cursor:pointer;
+}
+.dt-presets button:hover{border-color:var(--brand-1);color:var(--brand-2)}
+.dt-confirm{
+  border:0;border-radius:12px;padding:11px;cursor:pointer;font-weight:650;font-size:.88rem;
+  background:linear-gradient(135deg,var(--brand-1),var(--brand-2));color:#fff;
+  box-shadow:0 4px 12px rgba(13,148,136,.3);transition:transform .15s;
+}
+.dt-confirm:hover{transform:translateY(-1px)}
+.dt-widget.used{opacity:.55;pointer-events:none}
+
+/* ---------- help (?) catalog ---------- */
+.app{position:relative}
+#help-btn{
+  width:34px;height:34px;margin-right:7px;flex:none;border:0;border-radius:50%;cursor:pointer;
+  background:transparent;color:var(--muted);font-size:1rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;
+}
+#help-btn:hover,#help-btn.open{background:var(--ring);color:var(--brand-2)}
+.help-panel{
+  position:absolute;left:12px;right:12px;bottom:84px;z-index:20;
+  max-width:520px;margin:0 auto;max-height:min(58vh,430px);
+  display:none;flex-direction:column;border-radius:18px;overflow:hidden;
+  background:var(--card-solid);border:1px solid var(--line);
+  box-shadow:0 18px 50px rgba(2,20,15,.25);
+  animation:rise .2s cubic-bezier(.21,.9,.35,1);
+}
+.help-panel.open{display:flex}
+.help-head{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line);flex:none}
+.help-head svg{width:16px;height:16px;color:var(--muted);flex:none}
+#help-search{flex:1;border:0;outline:none;background:transparent;color:var(--fg);font-size:.9rem}
+#help-search::placeholder{color:var(--muted)}
+#help-close{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:8px}
+#help-close:hover{color:var(--fg);background:var(--line)}
+.help-list{overflow-y:auto;padding:6px}
+.help-cat{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:10px 10px 4px}
+.help-item{
+  display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;cursor:pointer;
+  background:transparent;color:var(--fg);padding:9px 10px;border-radius:11px;font-size:.87rem;
+}
+.help-item:hover,.help-item.active{background:var(--ring)}
+.help-item .hi-icon{flex:none;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  background:var(--chip-bg);border:1px solid var(--line);font-size:.95rem}
+.help-item .hi-label{font-weight:600}
+.help-item .hi-phrase{display:block;font-size:.74rem;color:var(--muted);margin-top:1px}
+.help-empty{padding:22px;text-align:center;color:var(--muted);font-size:.85rem}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+    </div>
+    <div>
+      <div class="h-title">BrightCare Clinic Assistant</div>
+      <div class="h-sub">Rasa Open Source · dev demo · not for medical advice</div>
+    </div>
+    <span id="status"><span class="dot"></span><span id="status-text">connecting…</span></span>
+  </header>
+
+  <div id="chat"></div>
+
+  <div class="quick" id="quick">
+    <button>🕐 Opening hours</button>
+    <button>📅 Book an appointment</button>
+    <button>🩸 Blood test prep</button>
+    <button>💳 Insurance</button>
+    <button>💡 What can you do?</button>
+    <button>👤 Talk to a human</button>
+  </div>
+
+  <div class="help-panel" id="help-panel" role="dialog" aria-label="Bot capabilities">
+    <div class="help-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+      </svg>
+      <input id="help-search" placeholder="Search what the bot can do…" autocomplete="off">
+      <button id="help-close" type="button" aria-label="Close">✕</button>
+    </div>
+    <div class="help-list" id="help-list"></div>
+  </div>
+
+  <form id="form" autocomplete="off">
+    <div class="field">
+      <input id="input" placeholder="Type a message…" maxlength="500">
+      <button id="help-btn" type="button" aria-label="Show bot capabilities" title="What can the bot do?">?</button>
+    </div>
+    <button id="send" type="submit" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/>
+      </svg>
+    </button>
+  </form>
+</div>
+
+<script>
+// Rasa server URL. Priority: ?rasa=... query param > RASA_URL below.
+// For the deployed bot pass e.g. ?rasa=https://username-brightcare.hf.space
+const RASA = (new URLSearchParams(location.search).get("rasa") || "http://localhost:5005").replace(/\/+$/, "");
+const QUICK_TEXT = {
+  "🕐 Opening hours": "What are your opening hours?",
+  "📅 Book an appointment": "Book me an appointment",
+  "🩸 Blood test prep": "Can I eat before a blood test?",
+  "💳 Insurance": "Do you accept public insurance?",
+  "💡 What can you do?": "What can you do?",
+  "👤 Talk to a human": "I want to talk to a human",
+};
+const chat = document.getElementById("chat");
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const send = document.getElementById("send");
+const statusEl = document.getElementById("status");
+const statusText = document.getElementById("status-text");
+const sender = "web-" + Math.random().toString(36).slice(2, 10);
+
+const BOT_AVATAR = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4"/><circle cx="12" cy="3" r="1"/><path d="M9 14h.01M15 14h.01"/></svg>`;
+
+function now() {
+  return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+function add(kind, text) {
+  const row = document.createElement("div");
+  row.className = "row " + (kind === "user" ? "user" : "bot");
+  if (kind !== "user") {
+    const av = document.createElement("div");
+    av.className = "avatar";
+    av.innerHTML = BOT_AVATAR;
+    row.appendChild(av);
+  }
+  const stack = document.createElement("div");
+  stack.className = "stack";
+  const b = document.createElement("div");
+  b.className = "bubble" + (kind === "error" ? " error" : "");
+  b.textContent = text;
+  const t = document.createElement("div");
+  t.className = "time";
+  t.textContent = now();
+  stack.appendChild(b);
+  stack.appendChild(t);
+  row.appendChild(stack);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+  return b;
+}
+
+function addReplyButtons(buttons) {
+  const row = document.createElement("div");
+  row.className = "row bot";
+  const spacer = document.createElement("div");
+  spacer.style.width = "32px"; spacer.style.flex = "none";
+  const stack = document.createElement("div");
+  stack.className = "stack";
+  const group = document.createElement("div");
+  group.className = "reply-btns";
+  for (const b of buttons) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = b.title;
+    btn.addEventListener("click", () => {
+      if (group.classList.contains("used")) return;
+      group.classList.add("used");
+      btn.classList.add("picked");
+      sendMessage(b.payload || b.title);
+    });
+    group.appendChild(btn);
+  }
+  stack.appendChild(group);
+  row.appendChild(spacer);
+  row.appendChild(stack);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function pad(n) { return String(n).padStart(2, "0"); }
+
+function addDateTimeWidget() {
+  const row = document.createElement("div");
+  row.className = "row bot";
+  const spacer = document.createElement("div");
+  spacer.style.width = "32px"; spacer.style.flex = "none";
+  const stack = document.createElement("div");
+  stack.className = "stack";
+  const w = document.createElement("div");
+  w.className = "dt-widget";
+
+  const today = new Date();
+  const tomorrow = new Date(today.getTime() + 864e5);
+  const iso = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+  w.innerHTML = `
+    <div class="dt-row">
+      <label>Date<input type="date" class="dt-date" min="${iso(today)}" value="${iso(tomorrow)}"></label>
+      <label>Time<input type="time" class="dt-time" step="900" value="10:00"></label>
+    </div>
+    <div class="dt-presets">
+      <button type="button" data-preset="tomorrow morning">Tomorrow morning</button>
+      <button type="button" data-preset="tomorrow afternoon">Tomorrow afternoon</button>
+      <button type="button" data-preset="next monday morning">Next Monday</button>
+    </div>
+    <button type="button" class="dt-confirm">Confirm time</button>`;
+
+  const finish = (text) => {
+    if (w.classList.contains("used")) return;
+    w.classList.add("used");
+    sendMessage(text);
+  };
+  w.querySelectorAll(".dt-presets button").forEach((b) =>
+    b.addEventListener("click", () => finish(b.dataset.preset)));
+  w.querySelector(".dt-confirm").addEventListener("click", () => {
+    const d = w.querySelector(".dt-date").value;
+    const t = w.querySelector(".dt-time").value;
+    if (!d || !t) return;
+    finish(`on ${d} at ${t}`);
+  });
+
+  stack.appendChild(w);
+  row.appendChild(spacer);
+  row.appendChild(stack);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function typing(on) {
+  let t = document.getElementById("typing");
+  if (on && !t) {
+    t = document.createElement("div");
+    t.id = "typing";
+    t.className = "row bot";
+    t.innerHTML = `<div class="avatar">${BOT_AVATAR}</div><div class="stack"><div class="bubble typing-bubble"><i></i><i></i><i></i></div></div>`;
+    chat.appendChild(t);
+    chat.scrollTop = chat.scrollHeight;
+  } else if (!on && t) t.remove();
+}
+
+async function health() {
+  try {
+    const r = await fetch(RASA + "/status");
+    if (r.ok) { statusText.textContent = "online"; statusEl.className = "ok"; return true; }
+    throw 0;
+  } catch {
+    statusText.textContent = "server offline"; statusEl.className = "err"; return false;
+  }
+}
+
+async function sendMessage(text) {
+  add("user", text);
+  typing(true);
+  send.disabled = true;
+  try {
+    const r = await fetch(RASA + "/webhooks/rest/webhook", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sender, message: text }),
+    });
+    const replies = await r.json();
+    typing(false);
+    if (!replies.length) add("error", "(no reply — check server logs)");
+    let dtShown = false;
+    for (const m of replies) {
+      if (m.text) add("bot", m.text);
+      if (m.image) {
+        const img = new Image();
+        img.src = m.image;
+        img.style.maxWidth = "100%";
+        img.style.borderRadius = "12px";
+        add("bot", "").appendChild(img);
+      }
+      if (m.buttons && m.buttons.length) addReplyButtons(m.buttons);
+      if (m.custom && m.custom.widget === "datetime" && !dtShown) {
+        dtShown = true;
+        addDateTimeWidget();
+      }
+      // fallback: detect the date question by text if no custom payload arrived
+      if (!dtShown && m.text && /when would you like to come/i.test(m.text)) {
+        dtShown = true;
+        addDateTimeWidget();
+      }
+    }
+  } catch {
+    typing(false);
+    add("error", "Cannot reach the Rasa server at " + RASA + ". Is it running?");
+    health();
+  }
+  send.disabled = false;
+  input.focus();
+}
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const t = input.value.trim();
+  if (!t) return;
+  input.value = "";
+  sendMessage(t);
+});
+document.getElementById("quick").addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (btn) sendMessage(QUICK_TEXT[btn.textContent.trim()] || btn.textContent.trim());
+});
+
+/* ---------- help (?) catalog ---------- */
+const CATALOG = [
+  { cat: "Clinic info", icon: "🕐", label: "Opening hours", phrase: "What are your opening hours?", kw: "time open close schedule saturday sunday weekend lab hours" },
+  { cat: "Clinic info", icon: "📍", label: "Location & directions", phrase: "Where are you located?", kw: "address map parking metro station directions find" },
+  { cat: "Clinic info", icon: "☎️", label: "Contacts", phrase: "What is your phone number?", kw: "phone email call reception prescription reach" },
+  { cat: "Clinic info", icon: "🏥", label: "Services & specialists", phrase: "What services do you offer?", kw: "doctors vaccination lab xray ultrasound ecg physiotherapy dermatology cardiology paediatrics" },
+  { cat: "Clinic info", icon: "💳", label: "Insurance", phrase: "Do you accept public insurance?", kw: "insurance private public cost pay self-paying covered krankenversicherung" },
+  { cat: "Appointments", icon: "📅", label: "Book an appointment", phrase: "Book me an appointment", kw: "book schedule visit slot reserve appointment make new" },
+  { cat: "Appointments", icon: "🔁", label: "Cancel or reschedule", phrase: "How do I cancel my appointment?", kw: "cancel reschedule move change miss postpone fee" },
+  { cat: "Appointments", icon: "🩺", label: "Doctor availability", phrase: "When does the cardiologist work?", kw: "availability schedule doctor cardiologist dermatologist paediatrician when works days" },
+  { cat: "Appointments", icon: "ℹ️", label: "How booking works", phrase: "How do I book an appointment?", kw: "booking online phone reception first visit documents referral" },
+  { cat: "Test preparation", icon: "🩸", label: "Blood test prep", phrase: "Can I eat before a blood test?", kw: "blood fasting eat coffee medication draw lab" },
+  { cat: "Test preparation", icon: "🫄", label: "Ultrasound prep", phrase: "How do I prepare for an ultrasound?", kw: "ultrasound abdominal pelvic stomach empty bladder" },
+  { cat: "Test preparation", icon: "🩻", label: "X-ray prep", phrase: "Any preparation needed for an X-ray?", kw: "xray x-ray radiography preparation" },
+  { cat: "Test preparation", icon: "📈", label: "ECG prep", phrase: "How to prepare for an ECG?", kw: "ecg ekg heart cardiogram preparation" },
+  { cat: "Other", icon: "💡", label: "What can the bot do", phrase: "What can you do?", kw: "help capabilities features guide options" },
+  { cat: "Other", icon: "👤", label: "Talk to a human", phrase: "I want to talk to a human", kw: "human person real staff reception handoff operator" },
+  { cat: "Other", icon: "🤖", label: "Is this a bot?", phrase: "Are you a bot?", kw: "bot ai robot human real who" },
+  { cat: "Other", icon: "😄", label: "Tell a joke", phrase: "Tell me a joke", kw: "joke fun chitchat name age" },
+  { cat: "Other", icon: "🚨", label: "Emergency", phrase: "What should I do in an emergency?", kw: "emergency urgent 112 chest pain ambulance" },
+];
+const helpBtn = document.getElementById("help-btn");
+const helpPanel = document.getElementById("help-panel");
+const helpSearch = document.getElementById("help-search");
+const helpList = document.getElementById("help-list");
+
+function renderCatalog(q) {
+  const query = (q || "").trim().toLowerCase();
+  const hit = (it) =>
+    !query || (it.label + " " + it.phrase + " " + it.kw + " " + it.cat).toLowerCase().includes(query);
+  const items = CATALOG.filter(hit);
+  helpList.innerHTML = "";
+  if (!items.length) {
+    helpList.innerHTML = '<div class="help-empty">Nothing found — try "book", "blood" or "insurance".</div>';
+    return;
+  }
+  let lastCat = null;
+  for (const it of items) {
+    if (it.cat !== lastCat) {
+      lastCat = it.cat;
+      const h = document.createElement("div");
+      h.className = "help-cat";
+      h.textContent = it.cat;
+      helpList.appendChild(h);
+    }
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "help-item";
+    b.innerHTML = `<span class="hi-icon">${it.icon}</span><span><span class="hi-label">${it.label}</span><span class="hi-phrase">“${it.phrase}”</span></span>`;
+    b.addEventListener("click", () => {
+      toggleHelp(false);
+      sendMessage(it.phrase);
+    });
+    helpList.appendChild(b);
+  }
+}
+
+function toggleHelp(open) {
+  const on = open !== undefined ? open : !helpPanel.classList.contains("open");
+  helpPanel.classList.toggle("open", on);
+  helpBtn.classList.toggle("open", on);
+  if (on) { renderCatalog(""); helpSearch.value = ""; helpSearch.focus(); }
+  else input.focus();
+}
+
+helpBtn.addEventListener("click", (e) => { e.stopPropagation(); toggleHelp(); });
+document.getElementById("help-close").addEventListener("click", () => toggleHelp(false));
+helpSearch.addEventListener("input", () => renderCatalog(helpSearch.value));
+helpSearch.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    const first = helpList.querySelector(".help-item");
+    if (first) first.click();
+  }
+  if (e.key === "Escape") toggleHelp(false);
+});
+document.addEventListener("click", (e) => {
+  if (helpPanel.classList.contains("open") &&
+      !helpPanel.contains(e.target) && e.target !== helpBtn) toggleHelp(false);
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && helpPanel.classList.contains("open")) toggleHelp(false);
+});
+
+health().then((ok) => {
+  add("bot", "Hello! Welcome to BrightCare Clinic. I can help you with opening hours, directions, appointments, our services, insurance and how to prepare for tests. What would you like to know?");
+  if (!ok) add("error", "Note: the Rasa server is not reachable yet. Start it and messages will go through.");
+});
+setInterval(health, 15000);
+input.focus();
+</script>
+</body>
+</html>
